@@ -1,0 +1,29 @@
+[Bb]in/
+[Oo]bj/
+ 
+ 
+*.pyc
+*.ide
+*.cache
+*.bak
+*.pdb
+*.mdb
+*.dll
+*.exe
+*.temp.csproj
+**project.lock.json
+ 
+# Resharper
+/_ReSharper.*
+*.ReSharper.*
+*.DotSettings
+ 
+ 
+# Rider
+.idea/
+ 
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.sln.docstates
