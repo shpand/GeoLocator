@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using GeoLocator.Models;
+using GeoLocator.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,21 +14,36 @@ namespace GeoLocator.Controllers
     //[Route("[controller]")]
     public class GeoLocationController : ControllerBase
     {
-        private readonly ILogger<GeoLocationController> _logger;
+        private readonly ILocationRepository _locationRepository;
 
-        public GeoLocationController(ILogger<GeoLocationController> logger)
+        public GeoLocationController()
         {
-            _logger = logger;
+            var sw = new Stopwatch();
+            sw.Start();
+            _locationRepository = new InMemoryLocationRepository("Data/geobase.dat");
+            var t = sw.ElapsedMilliseconds;
+            Console.Write(t);
+
+            sw.Restart();
+            for (int i = 0; i < 10; i++)
+            {
+                new InMemoryLocationRepository("Data/geobase.dat");
+            }
+            var  k  = sw.ElapsedMilliseconds;
+            Console.Write(k);
         }
 
         [HttpGet("ip/location")]
-        public Location Get(string ip)
+        //todo: add parameters check
+        public Location GetLocationByIp(string ip)
         {
-            return new Location
-            {
-                Country = "Belarus",
-                Region = "Minsk"
-            };
+            return _locationRepository.GetLocationByIp(ip);
+        }
+
+        [HttpGet("city/locations")]
+        public List<Location> GetLocationsByCity(string city)
+        {
+            return _locationRepository.GetLocationsByCity(city);
         }
     }
 }
