@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Security.Cryptography.X509Certificates;
 using GeoLocator.Models;
 using GeoLocator.Repositories.Extensions;
 
@@ -80,11 +78,11 @@ namespace GeoLocator.Repositories
             {
                 var location = new Location
                 {
-                    Country = reader.ReadStringCustom(8),
-                    Region = reader.ReadStringCustom(12),
-                    PostalCode = reader.ReadStringCustom(12),
-                    City = reader.ReadStringCustom(24),
-                    Organization = reader.ReadStringCustom(32),
+                    // Country = reader.ReadStringCustom(8),
+                    // Region = reader.ReadStringCustom(12),
+                    // PostalCode = reader.ReadStringCustom(12),
+                    // City = reader.ReadStringCustom(24),
+                    // Organization = reader.ReadStringCustom(32),
                     Latitude = reader.ReadSingle(),
                     Longitude = reader.ReadSingle()
                 };
