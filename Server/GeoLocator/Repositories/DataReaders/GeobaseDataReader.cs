@@ -31,9 +31,9 @@ namespace GeoLocator.Repositories.DataReaders
             return ReadData<Location>(_fileHeader.RecordCount, _fileHeader.OffsetLocations);
         }
 
-        public int[] ReadLocationIndexes()
+        public uint[] ReadLocationIndexes()
         {
-            return ReadData<int>(_fileHeader.RecordCount, _fileHeader.OffsetCities);
+            return ReadData<uint>(_fileHeader.RecordCount, _fileHeader.OffsetCities);
         }
 
         private T[] ReadData<T>(int recordCount, uint offset) where T: unmanaged
@@ -48,9 +48,7 @@ namespace GeoLocator.Repositories.DataReaders
                     var offsetSize = Marshal.SizeOf(typeof(T));;
                     while (i < recordCount)
                     {
-                        var t = *(T*) &ptr[i * offsetSize];
-                        array[i] = t;
-
+                        array[i] = *(T*) &ptr[i * offsetSize];
                         ++i;
                     }
                 }

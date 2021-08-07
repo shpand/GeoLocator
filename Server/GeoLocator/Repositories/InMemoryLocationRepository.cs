@@ -12,7 +12,7 @@ namespace GeoLocator.Repositories
     {
         private IpRange[] _ipRanges;
         private Location[] _locations;
-        private int[] _cityIndexes;
+        private uint[] _cityIndexes;
 
         public InMemoryLocationRepository(IGeobaseDataReader geobaseDataReader)
         {
@@ -36,7 +36,7 @@ namespace GeoLocator.Repositories
 
         public List<Location> GetLocationsByCity(string city)
         {
-            throw new System.NotImplementedException();
+            return _locations.Where(x => x.City == city).ToList();
         }
 
         private static uint ConvertIpToInt(string ip)
