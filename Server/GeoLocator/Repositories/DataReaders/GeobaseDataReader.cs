@@ -6,19 +6,13 @@ namespace GeoLocator.Repositories.DataReaders
 {
     public class GeobaseDataReader : IGeobaseDataReader
     {
-        private readonly byte[] _data;
+        private readonly string _geobaseFilePath;
         private readonly FileHeader _fileHeader;
 
         public GeobaseDataReader(string geobaseFilePath)
         {
-            //TODO: here I use a little trick of knowing beforehand the size of the array.
-            //Should I rewrite the solution to read the file section by section?
-            //Won't be hard but don't see any sense in it now
-            using var fs = new FileStream(geobaseFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 100000 * 112 + 60);
-            _data = new byte[100000 * 112 + 60];
-            FillBuffer(fs, _data, _data.Length);
-
-            _fileHeader = ReadFileHeader(_data);
+            _geobaseFilePath = geobaseFilePath;
+            _fileHeader = ReadFileHeader();
         }
 
         public IpRange[] ReadIpRanges()
@@ -31,6 +25,12 @@ namespace GeoLocator.Repositories.DataReaders
             return ReadData<Location>(_fileHeader.RecordCount, _fileHeader.OffsetLocations);
         }
 
+        public byte[] ReadLocationsBytes()
+        {
+            var recordSize = Marshal.SizeOf(typeof(Location));
+            return ReadFromFile(_fileHeader.RecordCount * recordSize, _fileHeader.OffsetLocations);
+        }
+
         public uint[] ReadLocationIndexes()
         {
             return ReadData<uint>(_fileHeader.RecordCount, _fileHeader.OffsetCities);
@@ -38,17 +38,19 @@ namespace GeoLocator.Repositories.DataReaders
 
         private T[] ReadData<T>(int recordCount, uint offset) where T: unmanaged
         {
+            var recordSize = Marshal.SizeOf(typeof(T));
+            var data = ReadFromFile(recordCount * recordSize, offset);
+
             var array = new T[recordCount];
 
             unsafe
             {
-                fixed (byte* ptr = &_data[offset])
+                fixed (byte* ptr = &data[0])
                 {
                     var i = 0;
-                    var offsetSize = Marshal.SizeOf(typeof(T));;
                     while (i < recordCount)
                     {
-                        array[i] = *(T*) &ptr[i * offsetSize];
+                        array[i] = *(T*) &ptr[i * recordSize];
                         ++i;
                     }
                 }
@@ -57,27 +59,39 @@ namespace GeoLocator.Repositories.DataReaders
             return array;
         }
 
-        private static void FillBuffer(Stream stream, byte[] buffer, int count)
+        private byte[] ReadFromFile(int count, uint offset)
+        {
+            using var fs = new FileStream(_geobaseFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, count);
+            var data = new byte[count];
+            FillBuffer(fs, data, count, offset);
+
+            return data;
+        }
+
+        private FileHeader ReadFileHeader()
+        {
+            const int recordSize = 60;
+            var data = ReadFromFile(recordSize, 0);
+            unsafe
+            {
+                fixed (byte* ptr = &data[0])
+                {
+                    return *(FileHeader*)ptr;
+                }
+            }
+        }
+
+        private static void FillBuffer(Stream stream, byte[] buffer, int count, uint streamOffset)
         {
             int read = 0;
             int totalRead = 0;
+            stream.Seek(streamOffset, SeekOrigin.Begin);
             do
             {
                 read = stream.Read(buffer, totalRead, count - totalRead);
                 totalRead += read;
 
             } while (read > 0 && totalRead < buffer.Length);
-        }
-
-        private static FileHeader ReadFileHeader(byte[] buffer)
-        {
-            unsafe
-            {
-                fixed (byte* ptr = &buffer[0])
-                {
-                    return *(FileHeader*)ptr;
-                }
-            }
         }
     }
 }
