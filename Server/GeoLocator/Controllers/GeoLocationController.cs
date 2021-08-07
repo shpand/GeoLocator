@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -49,7 +50,7 @@ namespace GeoLocator.Controllers
         }
 
         [HttpGet("city/locations")]
-        public List<Location> GetLocationsByCity(string city)
+        public List<Location> GetLocationsByCity([StringLength(24)]string city)
         {
             return _locationRepository.GetLocationsByCity(city);
         }
