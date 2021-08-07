@@ -5,19 +5,20 @@ namespace GeoLocator.Models
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public unsafe struct Location
     {
-        public fixed sbyte CountryBytes[8];
-        public fixed sbyte RegionBytes[12];
-        public fixed sbyte PostalCodeBytes[12];
-        public fixed sbyte CityBytes[24];
-        public fixed sbyte OrganizationBytes[32];
-        public float Latitude;
-        public float Longitude;
+        private fixed sbyte _buffer[96];
+        // public fixed sbyte CountryBytes[8];
+        // public fixed sbyte RegionBytes[12];
+        // public fixed sbyte PostalCodeBytes[12];
+        // public fixed sbyte CityBytes[24];
+        // public fixed sbyte OrganizationBytes[32];
+        // public float Latitude;
+        // public float Longitude;
 
         public string Country
         {
             get
             {
-                fixed(sbyte* ptr = &CountryBytes[0])
+                fixed(sbyte* ptr = &_buffer[0])
                 {
                     return new string(ptr);
                 }
@@ -28,7 +29,7 @@ namespace GeoLocator.Models
         {
             get
             {
-                fixed(sbyte* ptr = &RegionBytes[0])
+                fixed(sbyte* ptr = &_buffer[8])
                 {
                     return new string(ptr);
                 }
@@ -39,7 +40,7 @@ namespace GeoLocator.Models
         {
             get
             {
-                fixed(sbyte* ptr = &PostalCodeBytes[0])
+                fixed(sbyte* ptr = &_buffer[20])
                 {
                     return new string(ptr);
                 }
@@ -50,7 +51,7 @@ namespace GeoLocator.Models
         {
             get
             {
-                fixed(sbyte* ptr = &CityBytes[0])
+                fixed(sbyte* ptr = &_buffer[32])
                 {
                     return new string(ptr);
                 }
@@ -61,9 +62,31 @@ namespace GeoLocator.Models
         {
             get
             {
-                fixed(sbyte* ptr = &OrganizationBytes[0])
+                fixed(sbyte* ptr = &_buffer[56])
                 {
                     return new string(ptr);
+                }
+            }
+        }
+
+        public float Latitude
+        {
+            get
+            {
+                fixed(sbyte* ptr = &_buffer[88])
+                {
+                    return *(float*) &ptr;
+                }
+            }
+        }
+
+        public float Longitude
+        {
+            get
+            {
+                fixed(sbyte* ptr = &_buffer[92])
+                {
+                    return *(float*) &ptr;
                 }
             }
         }
