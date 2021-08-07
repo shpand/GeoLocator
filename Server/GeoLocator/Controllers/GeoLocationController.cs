@@ -21,14 +21,14 @@ namespace GeoLocator.Controllers
         {
             var sw = new Stopwatch();
             sw.Start();
-            _locationRepository = new InMemoryLocationRepositoryFast(new GeobaseDataReader("Data/geobase.dat"));
+            _locationRepository = new InMemoryLocationRepository(new GeobaseDataReader("Data/geobase.dat"));
             var t = sw.ElapsedMilliseconds;
             Console.Write(t);
 
             sw.Restart();
             for (int i = 0; i < 10; i++)
             {
-                new InMemoryLocationRepositoryFast(new GeobaseDataReader("Data/geobase.dat"));
+                new InMemoryLocationRepository(new GeobaseDataReader("Data/geobase.dat"));
             }
             var  k  = sw.ElapsedMilliseconds;
             Console.Write(k);
