@@ -5,56 +5,67 @@ namespace GeoLocator.Models
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public unsafe struct Location
     {
-        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
-        public fixed sbyte Country[8];
-        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
-        public fixed sbyte Region[12];
-        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
-        public fixed sbyte PostalCode[12];
-        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 24)]
-        public fixed sbyte City[24];
-        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-        public fixed sbyte Organization[32];
+        public fixed sbyte CountryBytes[8];
+        public fixed sbyte RegionBytes[12];
+        public fixed sbyte PostalCodeBytes[12];
+        public fixed sbyte CityBytes[24];
+        public fixed sbyte OrganizationBytes[32];
         public float Latitude;
         public float Longitude;
 
-        public string CountryGet
+        public string Country
         {
             get
             {
-                fixed(sbyte* ptr = &Country[0])
+                fixed(sbyte* ptr = &CountryBytes[0])
                 {
                     return new string(ptr);
                 }
             }
         }
 
-        public string RegionGet
+        public string Region
         {
             get
             {
-                fixed(sbyte* ptr = &Region[0])
+                fixed(sbyte* ptr = &RegionBytes[0])
                 {
                     return new string(ptr);
                 }
             }
         }
-    }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Location2
-    {
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
-        public string Country;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
-        public string Region;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
-        public string PostalCode;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 24)]
-        public string City;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-        public string Organization;
-        public float Latitude;
-        public float Longitude;
+        public string PostalCode
+        {
+            get
+            {
+                fixed(sbyte* ptr = &PostalCodeBytes[0])
+                {
+                    return new string(ptr);
+                }
+            }
+        }
+
+        public string City
+        {
+            get
+            {
+                fixed(sbyte* ptr = &CityBytes[0])
+                {
+                    return new string(ptr);
+                }
+            }
+        }
+
+        public string Organization
+        {
+            get
+            {
+                fixed(sbyte* ptr = &OrganizationBytes[0])
+                {
+                    return new string(ptr);
+                }
+            }
+        }
     }
 }
