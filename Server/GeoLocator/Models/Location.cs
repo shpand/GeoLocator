@@ -1,18 +1,60 @@
+using System.Runtime.InteropServices;
+
 namespace GeoLocator.Models
 {
-    public class Location
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public unsafe struct Location
     {
-        // public string Country;        // название страны (случайная строка с префиксом "cou_")
-        // public string Region;        // название области (случайная строка с префиксом "reg_")
-        // public string PostalCode;        // почтовый индекс (случайная строка с префиксом "pos_")
-        // public string City;          // название города (случайная строка с префиксом "cit_")
-        // public string Organization;  // название организации (случайная строка с префиксом "org_")
-        public byte[] Country;        // название страны (случайная строка с префиксом "cou_")
-        public byte[] Region;        // название области (случайная строка с префиксом "reg_")
-        public byte[] PostalCode;        // почтовый индекс (случайная строка с префиксом "pos_")
-        public byte[] City;          // название города (случайная строка с префиксом "cit_")
-        public byte[] Organization;  // название организации (случайная строка с префиксом "org_")
-        public float Latitude;          // широта
-        public float Longitude;         // долгота
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
+        public fixed sbyte Country[8];
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
+        public fixed sbyte Region[12];
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
+        public fixed sbyte PostalCode[12];
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 24)]
+        public fixed sbyte City[24];
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public fixed sbyte Organization[32];
+        public float Latitude;
+        public float Longitude;
+
+        public string CountryGet
+        {
+            get
+            {
+                fixed(sbyte* ptr = &Country[0])
+                {
+                    return new string(ptr);
+                }
+            }
+        }
+
+        public string RegionGet
+        {
+            get
+            {
+                fixed(sbyte* ptr = &Region[0])
+                {
+                    return new string(ptr);
+                }
+            }
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct Location2
+    {
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
+        public string Country;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
+        public string Region;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
+        public string PostalCode;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 24)]
+        public string City;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public string Organization;
+        public float Latitude;
+        public float Longitude;
     }
 }

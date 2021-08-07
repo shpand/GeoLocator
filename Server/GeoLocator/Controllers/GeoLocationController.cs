@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoLocator.Models;
 using GeoLocator.Repositories;
+using GeoLocator.Repositories.DataReaders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -20,14 +21,14 @@ namespace GeoLocator.Controllers
         {
             var sw = new Stopwatch();
             sw.Start();
-            _locationRepository = new InMemoryLocationRepositoryFast("Data/geobase.dat");
+            _locationRepository = new InMemoryLocationRepositoryFast(new GeobaseDataReader("Data/geobase.dat"));
             var t = sw.ElapsedMilliseconds;
             Console.Write(t);
 
             sw.Restart();
             for (int i = 0; i < 10; i++)
             {
-                new InMemoryLocationRepositoryFast("Data/geobase.dat");
+                new InMemoryLocationRepositoryFast(new GeobaseDataReader("Data/geobase.dat"));
             }
             var  k  = sw.ElapsedMilliseconds;
             Console.Write(k);

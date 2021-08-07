@@ -40,7 +40,7 @@ namespace GeoLocator.Repositories
 
             //though test description says that we have sbyte array it doesn't really matter when converting it to a string.
             //so we read bytes as unsigned bytes in order to convert it to a string
-            fileHeader.Name = reader.ReadStringCustom(32);
+            //fileHeader.Name = reader.ReadStringCustom(32);
 
             fileHeader.Timestamp = reader.ReadUInt64();
             fileHeader.RecordCount = reader.ReadInt32();

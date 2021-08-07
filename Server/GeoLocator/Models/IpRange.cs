@@ -1,9 +1,12 @@
+using System.Runtime.InteropServices;
+
 namespace GeoLocator.Models
 {
-    public class IpRange
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct IpRange
     {
-        public uint From;           // начало диапазона IP адресов
-        public uint To;             // конец диапазона IP адресов
-        public uint LocationIndex;    // индекс записи о местоположении
+        public uint From;
+        public uint To;
+        public uint LocationIndex;
     }
 }

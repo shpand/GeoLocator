@@ -1,13 +1,30 @@
+using System.Runtime.InteropServices;
+
 namespace GeoLocator.Models
 {
-    public class FileHeader
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct FileHeader2
     {
-        public int Version;           // версия база данных
-        public string Name;          // название/префикс для базы данных
-        public ulong Timestamp;         // время создания базы данных
-        public int   RecordCount;           // общее количество записей
-        public uint  OffsetRanges;     // смещение относительно начала файла до начала списка записей с геоинформацией
-        public uint  OffsetCities;     // смещение относительно начала файла до начала индекса с сортировкой по названию городов
-        public uint  OffsetLocations;  // смещение относительно начала файла до начала списка записей о местоположении
+        public int Version;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public string Name;
+        public ulong Timestamp;
+        public int RecordCount;
+        public uint OffsetRanges;
+        public uint OffsetCities;
+        public uint OffsetLocations;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public unsafe struct FileHeader
+    {
+        public int Version;
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public fixed char Name[16];
+        public ulong Timestamp;
+        public int RecordCount;
+        public uint OffsetRanges;
+        public uint OffsetCities;
+        public uint OffsetLocations;
     }
 }
