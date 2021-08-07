@@ -21,10 +21,15 @@ namespace GeoLocator.Repositories
             _cityIndexes = geobaseDataReader.ReadLocationIndexes();
         }
 
-        public Location GetLocationByIp(string ip)
+        public Location? GetLocationByIp(string ip)
         {
             var intNotationIp = ConvertIpToInt(ip);
             var locationIndex = FindLocationIndexByIp(intNotationIp);
+
+            if (locationIndex < 0)
+            {
+                return null;
+            }
 
             return _locations[locationIndex];
         }
@@ -45,7 +50,7 @@ namespace GeoLocator.Repositories
                 ipSections[3]);
         }
 
-        private uint FindLocationIndexByIp(uint ip)
+        private int FindLocationIndexByIp(uint ip)
         {
             var start = 0;
             var end = _ipRanges.Length - 1;
@@ -64,11 +69,11 @@ namespace GeoLocator.Repositories
                 }
                 else
                 {
-                    return _ipRanges[i].LocationIndex;
+                    return (int)_ipRanges[i].LocationIndex;
                 }
             }
 
-            throw new ArgumentOutOfRangeException("Specified ip address does not fall into a known range of ip addresses.");
+            return -1;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace GeoLocator.Repositories
 {
     public interface ILocationRepository
     {
-        Location GetLocationByIp(string ip);
+        Location? GetLocationByIp(string ip);
         List<Location> GetLocationsByCity(string city);
     }
 }
