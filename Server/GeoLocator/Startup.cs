@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GeoLocator.Repositories;
+using GeoLocator.Repositories.DataReaders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +30,9 @@ namespace GeoLocator
         {
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "GeoLocator", Version = "v1"}); });
+
+            var locationRepository = new InMemoryLocationRepository(new GeobaseDataReader("Data/geobase.dat"));
+            services.AddSingleton<ILocationRepository>(locationRepository);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

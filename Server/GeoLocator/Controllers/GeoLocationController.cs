@@ -19,21 +19,9 @@ namespace GeoLocator.Controllers
     {
         private readonly ILocationRepository _locationRepository;
 
-        public GeoLocationController()
+        public GeoLocationController(ILocationRepository locationRepository)
         {
-            var sw = new Stopwatch();
-            sw.Start();
-            _locationRepository = new InMemoryLocationRepository(new GeobaseDataReader("Data/geobase.dat"));
-            var t = sw.ElapsedMilliseconds;
-            Console.Write(t);
-
-            sw.Restart();
-            for (int i = 0; i < 10; i++)
-            {
-                new InMemoryLocationRepository(new GeobaseDataReader("Data/geobase.dat"));
-            }
-            var  k  = sw.ElapsedMilliseconds;
-            Console.Write(k);
+            _locationRepository = locationRepository;
         }
 
         [HttpGet("ip/location")]
