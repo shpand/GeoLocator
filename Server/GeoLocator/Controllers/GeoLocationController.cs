@@ -50,7 +50,7 @@ namespace GeoLocator.Controllers
         }
 
         [HttpGet("city/locations")]
-        public List<Location> GetLocationsByCity([StringLength(24)]string city)
+        public Location[] GetLocationsByCity([StringLength(24)]string city)
         {
             return _locationRepository.GetLocationsByCity(city);
         }

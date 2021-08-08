@@ -10,15 +10,18 @@ namespace GeoLocator.Repositories
 {
     public class InMemoryLocationRepository: ILocationRepository
     {
-        private IpRange[] _ipRanges;
-        private Location[] _locations;
-        private uint[] _cityIndexes;
+        private readonly IpRange[] _ipRanges;
+        private readonly Location[] _locations;
+        private readonly uint[] _locationIdsSortedByCity;
 
         public InMemoryLocationRepository(IGeobaseDataReader geobaseDataReader)
         {
             _ipRanges = geobaseDataReader.ReadIpRanges();
             _locations = geobaseDataReader.ReadLocations();
-            _cityIndexes = geobaseDataReader.ReadLocationIndexes();
+            var locationOffsetsSortedByCity = geobaseDataReader.ReadLocationIndexes();
+
+            ConvertLocationOffsetsToLocationIds(locationOffsetsSortedByCity);
+            _locationIdsSortedByCity = locationOffsetsSortedByCity;
         }
 
         public Location? GetLocationByIp(string ip)
@@ -34,20 +37,11 @@ namespace GeoLocator.Repositories
             return _locations[locationIndex];
         }
 
-        public List<Location> GetLocationsByCity(string city)
+        public Location[] GetLocationsByCity(string city)
         {
-            return _locations.Where(x => x.City == city).ToList();
-        }
+            var locationIds = FindLocationIdsByCity(city);
 
-        private static uint ConvertIpToInt(string ip)
-        {
-            var ipSections = ip.Split('.').Select(section => int.Parse(section)).ToArray();
-
-            return (uint)
-                (ipSections[0] * (1 << 24) +
-                ipSections[1] * (1 << 16) +
-                ipSections[2] * 256 +
-                ipSections[3]);
+            return locationIds.Select(id => _locations[id]).ToArray();
         }
 
         private int FindLocationIndexByIp(uint ip)
@@ -74,6 +68,75 @@ namespace GeoLocator.Repositories
             }
 
             return -1;
+        }
+
+        private List<int> FindLocationIdsByCity(string city)
+        {
+            var locationIds = new List<int>();
+
+            var start = 0;
+            var end = _locationIdsSortedByCity.Length - 1;
+
+            while (start <= end)
+            {
+                var i = (start + end) / 2;
+                var locationId = _locationIdsSortedByCity[i];
+                var comparisonResult = string.Compare(city, _locations[locationId].City);
+                switch (comparisonResult)
+                {
+                    case < 0:
+                        end = i - 1;
+                        break;
+
+                    case > 0:
+                        start = i + 1;
+                        break;
+
+                    default://found one of multiple locations. Search adjacent ids to the both sides
+                    {
+                        var current = i;
+                        while (current >= 0 && _locations[_locationIdsSortedByCity[current]].City == city)
+                        {
+                            locationIds.Add((int)_locationIdsSortedByCity[current]);
+                            --current;
+                        }
+
+                        current = i + 1;
+                        while (current < _locationIdsSortedByCity.Length && _locations[_locationIdsSortedByCity[current]].City == city)
+                        {
+                            locationIds.Add((int)_locationIdsSortedByCity[current]);
+                            ++current;
+                        }
+
+                        return locationIds;
+                    }
+                }
+            }
+
+            return locationIds;
+        }
+
+        private static uint ConvertIpToInt(string ip)
+        {
+            var ipSections = ip.Split('.').Select(section => int.Parse(section)).ToArray();
+
+            return (uint)
+                (ipSections[0] * (1 << 24) + //256 * 256 * 256
+                 ipSections[1] * (1 << 16) + //256 * 256
+                 ipSections[2] * 256 +
+                 ipSections[3]);
+        }
+
+        private static void ConvertLocationOffsetsToLocationIds(uint[] locationOffsetsSortedByCity)
+        {
+            //divide every offset by location size in order to find a proper index of location in the array.
+            //could use raw byte offsets together with raw location bytes deserializing bytes into Location with every request.
+            //that would speed up database reading but slow down request handling.
+            var recordSize = (uint)Marshal.SizeOf(typeof(Location));
+            for (int i = 0; i < locationOffsetsSortedByCity.Length; i++)
+            {
+                locationOffsetsSortedByCity[i] /= recordSize;
+            }
         }
     }
 }
