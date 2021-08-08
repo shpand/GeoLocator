@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GeoLocator.Models;
 
 namespace GeoLocator.Repositories

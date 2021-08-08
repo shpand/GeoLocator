@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using GeoLocator.Models;
 using GeoLocator.Repositories;
-using GeoLocator.Repositories.DataReaders;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GeoLocator.Controllers
 {
     [ApiController]
-    //[Route("[controller]")]
     public class GeoLocationController : ControllerBase
     {
         private readonly ILocationRepository _locationRepository;
