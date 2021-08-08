@@ -6,6 +6,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{BC0091
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoLocator", "Server\GeoLocator\GeoLocator.csproj", "{20F1F968-41CF-470B-9E23-2EBA0A391E16}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{72149266-27DC-47DE-B930-BB0BE8AE7311}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadTests", "LoadTests\LoadTests.csproj", "{24F944DF-C866-4359-BA42-49308EC20DE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,8 +20,13 @@ Global
 		{20F1F968-41CF-470B-9E23-2EBA0A391E16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20F1F968-41CF-470B-9E23-2EBA0A391E16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20F1F968-41CF-470B-9E23-2EBA0A391E16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24F944DF-C866-4359-BA42-49308EC20DE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24F944DF-C866-4359-BA42-49308EC20DE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24F944DF-C866-4359-BA42-49308EC20DE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24F944DF-C866-4359-BA42-49308EC20DE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{20F1F968-41CF-470B-9E23-2EBA0A391E16} = {C640D92B-5ACD-4B32-96B5-811A52978D76}
+		{24F944DF-C866-4359-BA42-49308EC20DE3} = {72149266-27DC-47DE-B930-BB0BE8AE7311}
 	EndGlobalSection
 EndGlobal
