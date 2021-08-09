@@ -25,12 +25,6 @@ namespace GeoLocator.Repositories.DataReaders
             return ReadData<Location>(_fileHeader.RecordCount, _fileHeader.OffsetLocations);
         }
 
-        public byte[] ReadLocationsBytes()
-        {
-            var recordSize = Marshal.SizeOf(typeof(Location));
-            return ReadFromFile(_fileHeader.RecordCount * recordSize, _fileHeader.OffsetLocations);
-        }
-
         public uint[] ReadLocationIndexes()
         {
             return ReadData<uint>(_fileHeader.RecordCount, _fileHeader.OffsetCities);
@@ -70,7 +64,7 @@ namespace GeoLocator.Repositories.DataReaders
 
         private FileHeader ReadFileHeader()
         {
-            const int recordSize = 60;
+            var recordSize = Marshal.SizeOf(typeof(FileHeader));;
             var data = ReadFromFile(recordSize, 0);
             unsafe
             {
@@ -83,8 +77,8 @@ namespace GeoLocator.Repositories.DataReaders
 
         private static void FillBuffer(Stream stream, byte[] buffer, int count, uint streamOffset)
         {
-            int read = 0;
-            int totalRead = 0;
+            var read = 0;
+            var totalRead = 0;
             stream.Seek(streamOffset, SeekOrigin.Begin);
             do
             {

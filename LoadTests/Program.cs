@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace LoadTests
 {
+    /// <summary>
+    /// Do not assess this code. This is not how I'd do load testing in real life.
+    /// This is not how I'd write code in production.
+    /// </summary>
     class Program
     {
         private static HttpClient _http = new();
@@ -15,11 +19,7 @@ namespace LoadTests
 
         static async Task Main(string[] args)
         {
-            await MakeRequests(100, 50000);
-            await Task.Delay(1000);
-            await MakeRequests(500, 50000);
-            await Task.Delay(5000);
-            await MakeRequests(10, 50000);
+            await MakeRequests(100, 500000);
             Console.WriteLine("Finished in: " + _sw.ElapsedMilliseconds / 1000d + "sec");
         }
 

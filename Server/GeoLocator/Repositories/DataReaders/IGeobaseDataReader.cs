@@ -6,7 +6,6 @@ namespace GeoLocator.Repositories.DataReaders
     {
         IpRange[] ReadIpRanges();
         Location[] ReadLocations();
-        byte[] ReadLocationsBytes();
         uint[] ReadLocationIndexes();
     }
 }

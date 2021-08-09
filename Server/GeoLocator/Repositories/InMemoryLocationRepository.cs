@@ -22,6 +22,10 @@ namespace GeoLocator.Repositories
             _locationIdsSortedByCity = locationOffsetsSortedByCity;
         }
 
+        /// <summary>
+        /// return Location by ip address or null if there's no location for the given ip
+        /// </summary>
+        /// <param name="ip">valid ip v4 address</param>
         public Location? GetLocationByIp(string ip)
         {
             var intNotationIp = ConvertIpToInt(ip);
@@ -35,6 +39,10 @@ namespace GeoLocator.Repositories
             return _locations[locationIndex];
         }
 
+        /// <summary>
+        /// return location[] for the given city.
+        /// Return empty array if no location corresponds to the given city
+        /// </summary>
         public Location[] GetLocationsByCity(string city)
         {
             var locationIds = FindLocationIdsByCity(city);
@@ -128,7 +136,7 @@ namespace GeoLocator.Repositories
         private static void ConvertLocationOffsetsToLocationIds(uint[] locationOffsetsSortedByCity)
         {
             //divide every offset by location size in order to find a proper index of location in the array.
-            //could use raw byte offsets together with raw location bytes deserializing bytes into Location with every request.
+            //could use raw byte offsets together with raw location bytes deserializing into Location with every request.
             //that would speed up database reading but slow down request handling.
             var recordSize = (uint)Marshal.SizeOf(typeof(Location));
             for (int i = 0; i < locationOffsetsSortedByCity.Length; i++)
